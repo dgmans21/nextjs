@@ -15,10 +15,40 @@
     max-width: 1180px;
     margin: 0 auto;
     padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .toolbar button {
+    padding: 10px 18px;
+    border: 1px solid #1d4ed8;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toolbar button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
   
   .hero {
-    margin-bottom: 20px;
+    background: white;
+    border: 1px solid #d8dee8;
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .notice {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #fcd34d;
+    background: #fffbeb;
+    color: #92400e;
   }
   
   .eyebrow {
@@ -28,8 +58,9 @@
   
   .layout {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.4fr);
     gap: 16px;
+    align-items: start;
   }
   
   .panel {
@@ -37,7 +68,12 @@
     border: 1px solid #d8dee8;
     border-radius: 8px;
     padding: 16px;
-    margin-bottom: 16px;
+    min-width: 0;
+  }
+
+  .panel h2 {
+    margin: 0 0 12px;
+    font-size: 18px;
   }
   
   .eventButton {
@@ -76,11 +112,64 @@
     padding: 8px;
   }
   
+  .detailColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .panel button {
+    margin-bottom: 12px;
+    padding: 10px 18px;
+    border: 1px solid #1d4ed8;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .panel button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .panel dl {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+  }
+
+  .panel dt {
+    font-weight: 700;
+    color: #64748b;
+  }
+
+  .panel dd {
+    margin: 0;
+  }
+
+  .inlineForm select {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .chatSources {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+
   pre {
     white-space: pre-wrap;
     background: #f3f4f6;
     padding: 12px;
     border-radius: 6px;
+    margin: 0;
   }
   
   @media (max-width: 900px) {
