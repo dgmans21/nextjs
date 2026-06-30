@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+Kafka의 올바른구조.png
+fallback 구조도.png
+그래서 나오는 프로젝트 구조도.png
+딥러닝 분석 수행 영역.png
+전체 아키텍처 구조도.png
+docs/apiserverbuild.md

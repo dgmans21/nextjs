@@ -1,113 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
+import { EventDetail } from "@/features/events/Event-detail/EventDetail";
+import { EventList } from "@/features/events/Event-list/EventList";
+import { selectCurrentEvent } from "@/store/selectors";
+import { useOpsStore } from "@/store/useOpsStore";
 
-import { fallbackEvents } from "@/entites";
-import type { EventsResponse, HealthResponse, StoreEvent } from "@/entites";
+export function ZustandDashboard() {
+  const store = useOpsStore(); //store의 state와 action을 가져온다
+  const selectedEvent = selectCurrentEvent(store.events, store.selectedEventId);
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-
-export function ApiFetchDashboard() {
-  const [events, setEvents] = useState<StoreEvent[]>([]);
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [usingFallback, setUsingFallback] = useState(false);
-
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    setUsingFallback(false);
-
-    try {
-      const [healthRes, eventsRes] = await Promise.all([
-        fetch(`${API_BASE}/health`),
-        fetch(`${API_BASE}/events`),
-      ]);
-
-      if (!healthRes.ok || !eventsRes.ok) {
-        throw new Error("API 응답 오류");
-      }
-
-      const healthData = (await healthRes.json()) as HealthResponse;
-      const eventsData = (await eventsRes.json()) as EventsResponse;
-
-      setHealth(healthData);
-      setEvents(eventsData.events);
-      setSelectedId(eventsData.events[0]?.event_id ?? null);
-    } catch {
-      setHealth(null);
-      setEvents(fallbackEvents);
-      setSelectedId(fallbackEvents[0]?.event_id ?? null);
-      setUsingFallback(true);
-      setError("API 연결 실패 — mock 데이터를 표시합니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void loadData();
-  }, [loadData]);
-
-  const selectedEvent = events.find((event) => event.event_id === selectedId) ?? null;
+  useEffect(() => { void store.loadEvents(); }, [store.loadEvents]);
 
   return (
-    <div className="dashboard">
-      <header className="hero">
-        <p className="eyebrow">Frontend 01 · API Fetch</p>
-        <h1>매장 운영 이벤트 대시보드</h1>
-        <p>백엔드 API에서 이벤트를 불러와 표시합니다.</p>
-      </header>
-
-      <div className="inlineForm" style={{ marginBottom: 16 }}>
-        <button type="button" onClick={() => void loadData()} disabled={loading}>
-          {loading ? "불러오는 중…" : "새로고침"}
-        </button>
-        {error ? <span>{error}</span> : null}
-        {usingFallback ? <span>mock 모드</span> : null}
-      </div>
-
-      <div className="layout">
-        <section className="panel">
-          <h2>Health</h2>
-          {health ? (
-            <pre>{JSON.stringify(health, null, 2)}</pre>
-          ) : (
-            <p>{loading ? "확인 중…" : "health 정보 없음"}</p>
-          )}
-        </section>
-
-        <section className="panel">
-          <h2>이벤트 ({events.length})</h2>
-          {events.map((event) => {
-            const severity = event.severity ?? event.severity_hint ?? "low";
-
-            return (
-              <button
-                key={event.event_id}
-                type="button"
-                className={`eventButton${selectedId === event.event_id ? " selected" : ""}`}
-                onClick={() => setSelectedId(event.event_id)}
-              >
-                <span>{event.message ?? event.event_type}</span>
-                <span className={`badge ${severity}`}>{severity}</span>
-                <span>{event.channel}</span>
-              </button>
-            );
-          })}
-        </section>
-
-        <section className="panel">
-          <h2>선택된 이벤트</h2>
-          {selectedEvent ? (
-            <pre>{JSON.stringify(selectedEvent, null, 2)}</pre>
-          ) : (
-            <p>이벤트를 선택하세요.</p>
-          )}
-        </section>
-      </div>
-    </div>
+    <main className="dashboard">
+      <section className="hero"><p className="eyebrow">Frontend 04</p><h1>Zustand 전역 상태</h1><p>관제센터 상태와 API action을 store로 모읍니다.</p>{store.error && <p className="notice">{store.error}</p>}</section>
+      <section className="layout"><EventList events={store.events} selectedEventId={store.selectedEventId} onSelect={store.selectEvent} /><EventDetail event={selectedEvent} /></section>
+      <section className="panel"><h2>Zustand와 Redux Toolkit 비교</h2><p>Zustand는 작은 store와 action으로 빠르게 전역 상태를 구성합니다. Redux Toolkit은 더 엄격한 규칙과 큰 팀에 유리합니다.</p></section>
+    </main>
   );
 }

@@ -1,2 +1,2 @@
-export type { EventsResponse, HealthResponse, Severity, StoreEvent } from "./types";
-export { fallbackEvents } from "./fallbackEvents";
+export type { EventsResponse, HealthResponse, Severity, StoreEvent } from "./store-event";
+export { fallbackEvents } from "./store-event";
